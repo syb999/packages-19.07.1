@@ -21,7 +21,7 @@ PKG_MIRROR_HASH:=cb0b4bb7a210091d807ee8e4a2876865f32a9bf195836eb2e1edf6c5975d113
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
-include ../../lang/python/python-package.mk
+include ../../lang/python/python3-package.mk
 
 define Package/danish
 	SECTION:=net
