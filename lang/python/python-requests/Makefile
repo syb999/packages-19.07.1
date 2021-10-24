@@ -8,69 +8,38 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-requests
-PKG_VERSION:=2.22.0
-PKG_RELEASE:=1
+PKG_VERSION:=2.25.1
+PKG_RELEASE:=2
 
 PKG_MAINTAINER:=Josef Schlehofer <josef.schlehofer@nic.cz>, Alexandru Ardelean <ardeleanalex@gmail.com>
 PKG_LICENSE:=Apache-2.0
 PKG_LICENSE_FILES:=LICENSE
 PKG_CPE_ID:=cpe:/a:python-requests:requests
 
-PKG_SOURCE:=requests-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://files.pythonhosted.org/packages/source/r/requests
-PKG_HASH:=11e007a8a2aa0323f5a921e9e6a2d7e4e67d9877e85773fba9ba6419025cbeb4
+PYPI_NAME:=requests
+PKG_HASH:=27973dd4a904a4f13b263a19c866c13b92a39ed1c964655f025f3f8d3d75b804
 
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(BUILD_VARIANT)-requests-$(PKG_VERSION)
-
+include ../pypi.mk
 include $(INCLUDE_DIR)/package.mk
-include ../python-package.mk
 include ../python3-package.mk
 
-PKG_UNPACK:=$(HOST_TAR) -C $(PKG_BUILD_DIR) --strip-components=1 -xzf $(DL_DIR)/$(PKG_SOURCE)
-
-define Package/python-requests/Default
+define Package/python3-requests
   SUBMENU:=Python
   SECTION:=lang
   CATEGORY:=Languages
   TITLE:=HTTP library for Python
   URL:=https://2.python-requests.org/
-endef
-
-define Package/python-requests
-$(call Package/python-requests/Default)
   DEPENDS:= \
-	  +PACKAGE_python-requests:python \
-	  +PACKAGE_python-requests:python-chardet \
-	  +PACKAGE_python-requests:python-idna \
-	  +PACKAGE_python-requests:python-urllib3 \
-	  +PACKAGE_python-requests:python-certifi
-  VARIANT:=python
-endef
-
-define Package/python3-requests
-$(call Package/python-requests/Default)
-  DEPENDS:= \
-	  +PACKAGE_python3-requests:python3-light  \
-	  +PACKAGE_python3-requests:python3-chardet  \
-	  +PACKAGE_python3-requests:python3-idna  \
-	  +PACKAGE_python3-requests:python3-urllib3  \
-	  +PACKAGE_python3-requests:python3-certifi
-  VARIANT:=python3
-endef
-
-define Package/python-requests/description
-  Requests is the only Non-GMO HTTP library for Python, safe for human consumption
+	  +python3-light  \
+	  +python3-chardet  \
+	  +python3-idna  \
+	  +python3-urllib3  \
+	  +python3-certifi
 endef
 
 define Package/python3-requests/description
-$(call Package/python-requests/description)
-.
-(Variant for Python3)
+  Requests is the only Non-GMO HTTP library for Python, safe for human consumption
 endef
-
-$(eval $(call PyPackage,python-requests))
-$(eval $(call BuildPackage,python-requests))
-$(eval $(call BuildPackage,python-requests-src))
 
 $(eval $(call Py3Package,python3-requests))
 $(eval $(call BuildPackage,python3-requests))

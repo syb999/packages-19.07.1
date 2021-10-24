@@ -5,16 +5,16 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-influxdb
-PKG_VERSION:=5.2.2
+PKG_VERSION:=5.3.0
 PKG_RELEASE:=1
 PKG_MAINTAINER:=Karel Kočí <cynerd@email.cz>
 
-PKG_SOURCE_URL:=https://pypi.python.org/packages/source/i/influxdb/
-PKG_SOURCE:=influxdb-$(PKG_VERSION).tar.gz
-PKG_HASH:=afeff28953a91b4ea1aebf9b5b8258a4488d0e49e2471db15ea43fd2c8533143
-PKG_LICENSE:=MIT
-PKG_BUILD_DIR:=$(BUILD_DIR)/influxdb-$(PKG_VERSION)
+PYPI_NAME:=influxdb
+PKG_HASH:=9bcaafd57ac152b9824ab12ed19f204206ef5df8af68404770554c5b55b475f6
 
+PKG_LICENSE:=MIT
+
+include ../pypi.mk
 include $(INCLUDE_DIR)/package.mk
 include ../python3-package.mk
 
@@ -24,8 +24,12 @@ define Package/python3-influxdb
   SUBMENU:=Python
   URL:=https://github.com/influxdb/influxdb-python
   TITLE:=python3-influxdb
-  DEPENDS:=+python3-requests +python3-pytz +python3-six +python3-dateutil
-  VARIANT:=python3
+  DEPENDS:=\
+    +python3-requests \
+    +python3-pytz \
+    +python3-six \
+    +python3-dateutil \
+    +python3-msgpack
 endef
 
 define Package/python3-influxdb/description
