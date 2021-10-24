@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gst1-plugins-base
-PKG_VERSION:=1.16.0
+PKG_VERSION:=1.16.2
 PKG_RELEASE:=1
 
 PKG_MAINTAINER:=W. Michael Petullo <mike@flyn.org> \
@@ -21,7 +21,7 @@ PKG_CPE_ID:=cpe:/a:gstreamer:gst-plugins-base
 PKG_BUILD_DIR:=$(BUILD_DIR)/gst-plugins-base-$(PKG_VERSION)
 PKG_SOURCE:=gst-plugins-base-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://gstreamer.freedesktop.org/src/gst-plugins-base
-PKG_HASH:=4093aa7b51e28fb24dfd603893fead8d1b7782f088b05ed0f22a21ef176fb5ae
+PKG_HASH:=b13e73e2fe74a4166552f9577c3dcb24bed077021b9c7fa600d910ec6987816a
 
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_PACKAGE_gst1-mod-alsa \
@@ -110,6 +110,13 @@ define Package/gstreamer1-plugins-base/config
 
   endmenu
 
+endef
+
+define Package/gst-play-1.0
+  CATEGORY:=Multimedia
+  SECTION:=multimedia
+  TITLE+= gst-play
+  DEPENDS:=+ALL:gst1-plugins-base +gstreamer1-libs +$(GST_DEPENDS) +libgstreamer1 $(ICONV_DEPENDS)
 endef
 
 GST_COND_SELECT = $(patsubst %,$(if $(CONFIG_PACKAGE_gst1-mod-$(1)),--enable,--disable)-%,$(1))
@@ -271,6 +278,11 @@ define GstBuildPlugin
   $$(eval $$(call BuildPackage,gst1-mod-$(1)))
 endef
 
+define Package/gst-play-1.0/install
+	$(INSTALL_DIR) $(1)/usr/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/gst-play-1.0 $(1)/usr/sbin/
+endef
+
 $(eval $(call GstBuildPlugin,alsa,ALSA,audio tag,,+alsa-lib))
 $(eval $(call GstBuildPlugin,app,app,app,,))
 $(eval $(call GstBuildPlugin,audioconvert,audio format conversion,audio,,))
@@ -293,3 +305,4 @@ $(eval $(call GstBuildPlugin,vorbis,Vorbis,audio tag,ogg,+libvorbis))
 
 $(eval $(call BuildPackage,gstreamer1-plugins-base))
 $(eval $(call BuildPackage,gst1-plugins-base))
+$(eval $(call BuildPackage,gst-play-1.0))

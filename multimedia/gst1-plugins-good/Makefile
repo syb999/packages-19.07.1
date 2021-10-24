@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gst1-plugins-good
-PKG_VERSION:=1.16.0
+PKG_VERSION:=1.16.2
 PKG_RELEASE:=1
 
 PKG_MAINTAINER:=W. Michael Petullo <mike@flyn.org> \
@@ -21,7 +21,7 @@ PKG_CPE_ID:=cpe:/a:gstreamer:good_plug-ins
 PKG_BUILD_DIR:=$(BUILD_DIR)/gst-plugins-good-$(PKG_VERSION)
 PKG_SOURCE:=gst-plugins-good-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://gstreamer.freedesktop.org/src/gst-plugins-good/
-PKG_HASH:=654adef33380d604112f702c2927574cfc285e31307b79e584113858838bb0fd
+PKG_HASH:=40bb3bafda25c0b739c8fc36e48380fccf61c4d3f83747e97ac3f9b0171b1319
 
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_PACKAGE_gst1-mod-lame \
@@ -90,6 +90,9 @@ define Package/gstreamer1-plugins-good/config
   endmenu
 
 endef
+
+TARGET_CPPFLAGS:= \
+	-D_GNU_SOURCE
 
 GST_COND_SELECT = $(patsubst %,$(if $(CONFIG_PACKAGE_gst1-mod-$(1)),--enable,--disable)-%,$(1))
 
@@ -210,7 +213,7 @@ $(eval $(call GstBuildPlugin,imagefreeze,imagefreeze support,,,))
 $(eval $(call GstBuildPlugin,interleave,audio interleave,audio,,))
 $(eval $(call GstBuildPlugin,isomp4,isomp4 support,audio pbutils riff rtp tag video,,))
 #$(eval $(call GstBuildPlugin,jack,jack support,audio,,))
-$(eval $(call GstBuildPlugin,jpeg,jpeg support,video,,+libjpeg))
+$(eval $(call GstBuildPlugin,jpeg,jpeg support,video,,+libjpeg-turbo))
 $(eval $(call GstBuildPlugin,lame,MP3 encoder (using LAME),audio,,+lame-lib))
 $(eval $(call GstBuildPlugin,level,audio level,audio,,))
 $(eval $(call GstBuildPlugin,matroska,matroska support,audio pbutils riff tag video,,))

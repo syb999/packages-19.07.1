@@ -8,8 +8,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gstreamer1
-PKG_VERSION:=1.16.0
-PKG_RELEASE:=2
+PKG_VERSION:=1.16.2
+PKG_RELEASE:=1
 
 PKG_MAINTAINER:=W. Michael Petullo <mike@flyn.org> \
 		Ted Hess <thess@kitschensync.net>
@@ -21,7 +21,7 @@ PKG_CPE_ID:=cpe:/a:gstreamer_project:gstreamer
 PKG_BUILD_DIR:=$(BUILD_DIR)/gstreamer-$(PKG_VERSION)
 PKG_SOURCE:=gstreamer-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://gstreamer.freedesktop.org/src/gstreamer
-PKG_HASH:=0e8e2f7118be437cba879353970cf83c2acced825ecb9275ba05d9186ef07c00
+PKG_HASH:=e3f044246783fd685439647373fa13ba14f7ab0b346eadd06437092f8419e94e
 
 PKG_FIXUP:=autoreconf
 PKG_REMOVE_FILES:=autogen.sh aclocal.m4
@@ -105,7 +105,7 @@ endef
 define Package/libgstreamer1
   $(call Package/gstreamer1/Default)
   TITLE+= library (core)
-  DEPENDS+= +glib2 +libpthread +libxml2
+  DEPENDS+= +glib2 +libpthread +libxml2 +librt
   HIDDEN:=1
 endef
 
