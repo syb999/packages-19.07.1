@@ -32,7 +32,7 @@ define Package/vips
   CATEGORY:=Multimedia
   TITLE:=An image manipulation library
   URL:=https://libvips.github.io/libvips/
-  DEPENDS:=+glib2 +libexif +libexpat +libjpeg +libpng +giflib +libxml2 $(CXX_DEPENDS) $(INTL_DEPENDS)
+  DEPENDS:=+glib2 +libexif +libexpat +libjpeg-turbo +libpng +giflib +libxml2 $(CXX_DEPENDS) $(INTL_DEPENDS)
 endef
 
 CONFIGURE_ARGS += \

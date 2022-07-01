@@ -31,7 +31,7 @@ PLUGINS:= \
 	gif:+giflib \
 	gstreamer:+libgstreamer1:+gstreamer1-plugins-base:+libgst1app:+libgst1pbutils:+libgst1tag \
 	it \
-	jpeg:+libjpeg \
+	jpeg:+libjpeg-turbo \
 	man \
 	mime:+libmagic \
 	mpeg:+libmpeg2 \

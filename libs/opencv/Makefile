@@ -43,7 +43,7 @@ define Package/opencv
   CATEGORY:=Libraries
   TITLE:=OpenCV
   URL:=https://opencv.org/
-  DEPENDS:=+libpthread +librt +libatomic +libstdcpp +zlib +libjpeg
+  DEPENDS:=+libpthread +librt +libatomic +libstdcpp +zlib +libjpeg-turbo
 endef
 
 CMAKE_OPTIONS += \

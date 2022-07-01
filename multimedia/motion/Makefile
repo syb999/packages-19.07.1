@@ -29,7 +29,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/motion
   SECTION:=multimedia
   CATEGORY:=Multimedia
-  DEPENDS:=+libjpeg +libpthread +libmicrohttpd-ssl
+  DEPENDS:=+libjpeg-turbo +libpthread +libmicrohttpd-ssl
   TITLE:=webcam motion sensing and logging
   URL:=https://motion-project.github.io/
 endef

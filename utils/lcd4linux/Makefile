@@ -152,7 +152,7 @@ $(call Package/lcd4linux/Default)
 	+LCD4LINUX_CUSTOM_NEEDS_libdbus:libdbus \
 	+LCD4LINUX_CUSTOM_NEEDS_libgd:libgd \
 	$(if $(ICONV_FULL),+LCD4LINUX_CUSTOM_NEEDS_libiconv:libiconv-full) \
-	+LCD4LINUX_CUSTOM_NEEDS_libjpeg:libjpeg \
+	+LCD4LINUX_CUSTOM_NEEDS_libjpeg:libjpeg-turbo \
 	+LCD4LINUX_CUSTOM_NEEDS_libmpdclient:libmpdclient \
 	+LCD4LINUX_CUSTOM_NEEDS_libmysqlclient:libmysqlclient \
 	+LCD4LINUX_CUSTOM_NEEDS_libncurses:libncurses \

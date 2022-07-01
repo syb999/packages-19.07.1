@@ -76,7 +76,7 @@ endef
 define Package/libupm
   $(call Package/libupm/Default)
   TITLE:=Intel IoT sensor library - Full
-  DEPENDS+=+libjpeg +libmodbus +openzwave
+  DEPENDS+=+libjpeg-turbo +libmodbus +openzwave
   DEPENDS+= $(foreach module, $(UPM_MODULES), +libupm-$(module))
   DEPENDS+= $(foreach module, $(UPM_MODULES), +libupm-$(module)-python3)
 endef
@@ -310,7 +310,7 @@ define UpmPackage/depends
     DEPENDS+=+libupm-utilities
   endif
   ifeq ($$(1),vcap)
-    DEPENDS+=+libjpeg
+    DEPENDS+=+libjpeg-turbo
   endif
   ifeq ($$(1),t3311)
     DEPENDS+=+libmodbus

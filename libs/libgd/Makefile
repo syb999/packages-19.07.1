@@ -29,7 +29,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/libgd
   SECTION:=libs
   CATEGORY:=Libraries
-  DEPENDS:=+libjpeg +libpng +LIBGD_TIFF:libtiff +LIBGD_FREETYPE:libfreetype
+  DEPENDS:=+libjpeg-turbo +libpng +LIBGD_TIFF:libtiff +LIBGD_FREETYPE:libfreetype
   TITLE:=The GD graphics library
   URL:=https://libgd.github.io/
   MENU:=1
