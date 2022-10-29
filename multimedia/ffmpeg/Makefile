@@ -346,8 +346,8 @@ $(call Package/libffmpeg/Default)
  DEPENDS+= +alsa-lib +libgnutls +PACKAGE_libopus:libopus \
     +SOFT_FLOAT:shine \
     +!SOFT_FLOAT:lame-lib \
-    +PACKAGE_libx264:libx264 \
-    +!PACKAGE_libx264:fdk-aac
+    +libx264 \
+    +fdk-aac
  VARIANT:=full
 endef
 
@@ -398,7 +398,7 @@ FFMPEG_CONFIGURE:= \
 	--disable-lzma \
 	--disable-vaapi \
 	--disable-vdpau \
-	--disable-outdevs
+	--enable-outdev=alsa
 
 ifeq ($(CONFIG_SOFT_FLOAT),y)
 FFMPEG_CONFIGURE+= \
