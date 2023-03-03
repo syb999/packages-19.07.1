@@ -347,7 +347,8 @@ $(call Package/libffmpeg/Default)
     +SOFT_FLOAT:shine \
     +!SOFT_FLOAT:lame-lib \
     +libx264 \
-    +fdk-aac
+    +libx265 \
+    +libfreetype
  VARIANT:=full
 endef
 
@@ -491,6 +492,16 @@ ifeq ($(BUILD_VARIANT),full)
 		--enable-libx264
   else
 	FFMPEG_CONFIGURE+= $(if $(CONFIG_PACKAGE_fdk-aac),--enable-libfdk-aac)
+  endif
+
+  ifneq ($(CONFIG_PACKAGE_libx265),)
+	FFMPEG_CONFIGURE+= \
+		--enable-libx265
+  endif
+
+  ifneq ($(CONFIG_PACKAGE_libfreetype),)
+	FFMPEG_CONFIGURE+= \
+		--enable-libfreetype
   endif
 endif
 
