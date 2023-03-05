@@ -87,6 +87,6 @@ start_service() {
 }
 
 service_triggers() {
-	# PROCD_RELOAD_DELAY=1000
+	PROCD_RELOAD_DELAY=1000
 	procd_add_reload_trigger "dhcp" "system" "samba" "samba4" "ksmbd"
 }
