@@ -250,6 +250,10 @@ $(call Package/ffmpeg/Default)
  VARIANT:=full
 endef
 
+define Package/ffmpeg/config
+source "$(SOURCE)/ffcfg.in"
+endef
+
 define Package/ffmpeg-custom
 $(call Package/ffmpeg/Default)
  SECTION:=multimedia
@@ -346,9 +350,10 @@ $(call Package/libffmpeg/Default)
  DEPENDS+= +alsa-lib +libgnutls +PACKAGE_libopus:libopus \
     +SOFT_FLOAT:shine \
     +!SOFT_FLOAT:lame-lib \
-    +libx264 \
-    +libx265 \
-    +libfreetype
+    +PACKAGE_$(PKG_NAME)_INCLUDE_libx264:libx264 \
+    +PACKAGE_$(PKG_NAME)_INCLUDE_libx265:libx265 \
+    +PACKAGE_$(PKG_NAME)_INCLUDE_libfreetype:libfreetype \
+    +PACKAGE_$(PKG_NAME)_INCLUDE_libfdk-aac:fdk-aac
  VARIANT:=full
 endef
 
