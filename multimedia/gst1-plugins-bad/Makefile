@@ -20,7 +20,7 @@ PKG_LICENSE_FILES:=COPYING.LIB COPYING
 PKG_BUILD_DIR:=$(BUILD_DIR)/gst-plugins-bad-$(PKG_VERSION)
 PKG_SOURCE:=gst-plugins-bad-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://gstreamer.freedesktop.org/src/gst-plugins-bad/
-#PKG_MD5SUM:=e9e562d86c1527c44d904500dd35e326
+PKG_MD5SUM:=e9e562d86c1527c44d904500dd35e326
 
 PKG_FIXUP:=autoreconf
 PKG_BUILD_PARALLEL:=1
