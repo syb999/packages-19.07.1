@@ -16,11 +16,11 @@ include $(TOPDIR)/rules.mk
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python3-beautifulsoup4
-PKG_VERSION:=4.9.3
+PKG_VERSION:=4.10.0
 PKG_RELEASE:=1
 
 PYPI_NAME:=beautifulsoup4
-PKG_HASH:=84729e322ad1d5b4d25f805bfa05b902dd96450f43842c4e99067d5e1369eb25
+PKG_HASH:=c23ad23c521d818955a4151a67d81580319d4bf548d3d49f4223ae041ff98891
 
 include $(TOPDIR)/feeds/packages/lang/python/pypi.mk
 include $(INCLUDE_DIR)/package.mk
