@@ -9,18 +9,20 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ffmpeg
-PKG_VERSION:=4.3.1
+PKG_VERSION:=5.1
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://ffmpeg.org/releases/
-PKG_HASH:=ad009240d46e307b4e03a213a0f49c11b650e445b1f8be0dda2a9212b34d2ffb
+PKG_HASH:=55eb6aab5ee235550fa54a33eaf8bf1b4ec66c01453182b12f6a993d75698b03
 PKG_MAINTAINER:=Ted Hess <thess@kitschensync.net>, \
 		Ian Leonard <antonlacon@gmail.com>
 
 PKG_LICENSE:=LGPL-2.1-or-later GPL-2.0-or-later LGPL-3.0-or-later
 PKG_LICENSE_FILES:=COPYING.GPLv2 COPYING.GPLv3 COPYING.LGPLv2.1 COPYING.LGPLv3
 PKG_CPE_ID:=cpe:/a:ffmpeg:ffmpeg
+
+PKG_BUILD_PARALLEL:=1
 
 FFMPEG_CUSTOM_ENCODERS:= \
 	ac3 \
@@ -228,7 +230,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/ffmpeg/Default
  TITLE:=FFmpeg
  URL:=https://ffmpeg.org/
- DEPENDS+= +libpthread +libgnutls
+ DEPENDS+= +libpthread
 endef
 
 define Package/ffmpeg/Default/description
@@ -248,10 +250,6 @@ $(call Package/ffmpeg/Default)
  TITLE+= program
  DEPENDS+= +libffmpeg-full
  VARIANT:=full
-endef
-
-define Package/ffmpeg/config
-source "$(SOURCE)/ffcfg.in"
 endef
 
 define Package/ffmpeg-custom
@@ -335,6 +333,7 @@ define Package/libffmpeg-audio-dec
 $(call Package/libffmpeg/Default)
  TITLE+= (audio)
  VARIANT:=audio-dec
+ CONFLICTS:=libffmpeg-full
 endef
 
 define Package/libffmpeg-audio-dec/description
@@ -350,11 +349,10 @@ $(call Package/libffmpeg/Default)
  DEPENDS+= +alsa-lib +libgnutls +PACKAGE_libopus:libopus \
     +SOFT_FLOAT:shine \
     +!SOFT_FLOAT:lame-lib \
-    +PACKAGE_$(PKG_NAME)_INCLUDE_libx264:libx264 \
-    +PACKAGE_$(PKG_NAME)_INCLUDE_libx265:libx265 \
-    +PACKAGE_$(PKG_NAME)_INCLUDE_libfreetype:libfreetype \
-    +PACKAGE_$(PKG_NAME)_INCLUDE_libfdk-aac:fdk-aac
+    +PACKAGE_libx264:libx264 \
+    +!PACKAGE_libx264:fdk-aac
  VARIANT:=full
+ PROVIDES+=libffmpeg-mini libffmpeg-audio-dec
 endef
 
 
@@ -369,6 +367,7 @@ define Package/libffmpeg-mini
 $(call Package/libffmpeg/Default)
  TITLE+= (mini)
  VARIANT:=mini
+ CONFLICTS:=libffmpeg-full
 endef
 
 define Package/libffmpeg-mini/description
@@ -497,16 +496,6 @@ ifeq ($(BUILD_VARIANT),full)
 		--enable-libx264
   else
 	FFMPEG_CONFIGURE+= $(if $(CONFIG_PACKAGE_fdk-aac),--enable-libfdk-aac)
-  endif
-
-  ifneq ($(CONFIG_PACKAGE_libx265),)
-	FFMPEG_CONFIGURE+= \
-		--enable-libx265
-  endif
-
-  ifneq ($(CONFIG_PACKAGE_libfreetype),)
-	FFMPEG_CONFIGURE+= \
-		--enable-libfreetype
   endif
 endif
 
@@ -646,7 +635,7 @@ define Build/Configure
 endef
 
 define Build/Compile
-	$(MAKE) -C $(PKG_BUILD_DIR) \
+	+$(MAKE) $(PKG_JOBS) -C $(PKG_BUILD_DIR) \
 		DESTDIR="$(PKG_INSTALL_DIR)" \
 		all install
 endef
