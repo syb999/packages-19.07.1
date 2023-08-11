@@ -8,13 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=vim
-PKG_VERSION:=8.1
-PKG_RELEASE:=5
-VIMVER:=81
+PKG_VERSION:=8.2
+PKG_RELEASE:=3
+VIMVER:=82
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=http://ftp.vim.org/pub/vim/unix
-PKG_HASH:=8b69fbd01c877dd8ecbbeca1dc66e5e927228d631ac4c2174b9307eb5c827c86
+PKG_HASH:=f087f821831b4fece16a0461d574ccd55a8279f64d635510a1e10225966ced3b
 PKG_MAINTAINER:=Marko Ratkaj <marko.ratkaj@sartura.hr>
 PKG_CPE_ID:=cpe:/a:vim:vim
 
@@ -22,7 +22,6 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)$(VIMVER)
 PKG_BUILD_PARALLEL:=1
 
 HOST_BUILD_DEPENDS:=libiconv/host
-
 HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/$(PKG_NAME)$(VIMVER)
 HOST_BUILD_PARALLEL:=1
 
@@ -46,12 +45,16 @@ endef
 define Package/vim-full
   $(call Package/vim/Default)
   TITLE+= (Normal)
+  PROVIDES:=vim
+  CONFLICTS:=vim
 endef
 
 
 define Package/vim-fuller
   $(call Package/vim/Default)
   TITLE+= (Big)
+  PROVIDES:=vim vim-full
+  CONFLICTS:=vim vim-full
 endef
 
 define Package/vim-runtime
@@ -130,6 +133,7 @@ CONFIGURE_ARGS += \
 	--disable-cscope \
 	--disable-gpm \
 	--disable-acl \
+	--disable-selinux \
 	--with-tlib=ncurses \
 	--with-compiledby="non-existent-hostname-compiled"
 
@@ -157,7 +161,6 @@ ifneq ($(CONFIG_PACKAGE_vim),)
 define Build/Compile/vim
 	$(call Build/Configure/Default, \
 		--with-features=tiny \
-		--disable-multibyte \
 	)
 	+$(MAKE) $(PKG_JOBS) -C $(PKG_BUILD_DIR) \
 		DESTDIR="$(PKG_INSTALL_DIR)" all
@@ -169,7 +172,6 @@ ifneq ($(CONFIG_PACKAGE_vim-full),)
 define Build/Compile/vim-full
 	$(call Build/Configure/Default, \
 		--with-features=normal \
-		--enable-multibyte \
 	)
 	+$(MAKE) $(PKG_JOBS) -C $(PKG_BUILD_DIR) \
 		DESTDIR="$(PKG_INSTALL_DIR)" all
@@ -181,7 +183,6 @@ ifneq ($(CONFIG_PACKAGE_vim-fuller),)
 define Build/Compile/vim-fuller
 	$(call Build/Configure/Default, \
 		--with-features=big \
-		--enable-multibyte \
 	)
 	+$(MAKE) $(PKG_JOBS) -C $(PKG_BUILD_DIR) \
 		DESTDIR="$(PKG_INSTALL_DIR)" all
@@ -232,8 +233,10 @@ define Package/vim-fuller/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/vim_big $(1)/usr/bin/vim
 	$(INSTALL_DIR) $(1)/usr/share/vim
-	$(CP) -r $(PKG_INSTALL_DIR)/usr/share/vim/vim$(VIMVER) $(1)/usr/share/vim
-	$(INSTALL_CONF) ./files/vimrc.full $(1)/usr/share/vim/vimrc
+	$(LN) vim $(1)/usr/bin/vimdiff
+	$(CP) $(PKG_INSTALL_DIR)/usr/share/vim/vim$(VIMVER) $(1)/usr/share/vim
+	$(INSTALL_DIR) $(1)/root
+	$(INSTALL_CONF) ./files/vimrc.fuller $(1)/root/.vimrc
 endef
 
 
