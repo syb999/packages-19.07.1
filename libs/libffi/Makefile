@@ -20,6 +20,7 @@ PKG_LICENSE_FILES:=LICENSE
 
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
+PKG_BUILD_PARALLEL:=1
 PKG_USE_MIPS16:=0
 
 include $(INCLUDE_DIR)/package.mk
@@ -46,14 +47,29 @@ A layer must exist above libffi that handles type conversions for values passed
 between the two languages.
 endef
 
-CONFIGURE_PATH = build
-CONFIGURE_CMD = ../configure
-MAKE_PATH = build
-
-define Build/Configure
-	mkdir -p $(PKG_BUILD_DIR)/build
-	$(Build/Configure/Default)
+define Package/libffi-dev
+  SECTION:=devel
+  CATEGORY:=Development
+  SUBMENU:=Libraries
+  DEPENDS:=libffi
+  TITLE:=Development files for the libffi library
 endef
+
+HOST_CONFIGURE_ARGS += \
+	--disable-shared \
+	--disable-debug \
+	--disable-docs \
+	--disable-multi-os-directory \
+	--disable-raw-api \
+	--disable-structs \
+	--with-pic
+
+CONFIGURE_ARGS += \
+	--disable-debug \
+	--disable-docs \
+	--disable-multi-os-directory \
+	--disable-raw-api \
+	--disable-structs
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig
@@ -63,11 +79,11 @@ define Build/InstallDev
 	$(CP) \
 		$(PKG_INSTALL_DIR)/usr/lib/pkgconfig/* \
 		$(1)/usr/lib/pkgconfig/
-	sed -i -e 's,includedir=.*,includedir=$$$${prefix}/include,' $(1)/usr/lib/pkgconfig/libffi.pc
+	$(SED) 's,includedir=.*,includedir=$$$${prefix}/include,' $(1)/usr/lib/pkgconfig/libffi.pc
 
 	$(INSTALL_DIR) $(1)/usr/include
 	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/lib/$(PKG_NAME)-$(PKG_VERSION)/include/*.h \
+		$(PKG_INSTALL_DIR)/usr/include/*.h \
 		$(1)/usr/include/
 endef
 
@@ -76,17 +92,19 @@ define Package/libffi/install
 	$(CP) \
 		$(PKG_INSTALL_DIR)/usr/lib/libffi.so.* \
 		$(1)/usr/lib/
+	ln -sf libffi.so.8 $(1)/usr/lib/libffi.so
 endef
 
-define Host/Install
-	$(call Host/Install/Default)
-	# Adjust host libffi headers ; the default rule does
-	# not seem to install them to the proper include folder
-	$(INSTALL_DIR) $(STAGING_DIR_HOSTPKG)/include
-	$(CP) \
-		$(STAGING_DIR_HOSTPKG)/lib/libffi-$(PKG_VERSION)/include/*.h \
-		$(STAGING_DIR_HOSTPKG)/include
+define Package/libffi-dev/install
+	$(INSTALL_DIR) $(1)/usr/include
+	$(CP) $(PKG_INSTALL_DIR)/usr/include/*.h $(1)/usr/include/
+	$(INSTALL_DIR) $(1)/usr/lib
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libffi.a $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/lib/pkgconfig/libffi.pc \
+	  $(1)/usr/lib/pkgconfig/
 endef
 
 $(eval $(call HostBuild))
 $(eval $(call BuildPackage,libffi))
+$(eval $(call BuildPackage,libffi-dev))
