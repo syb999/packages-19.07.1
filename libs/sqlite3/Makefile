@@ -8,27 +8,26 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=sqlite
-PKG_VERSION:=3300100
-PKG_RELEASE:=1
+PKG_VERSION:=3400000
+PKG_RELEASE:=$(AUTORELEASE)
 
 PKG_SOURCE:=$(PKG_NAME)-autoconf-$(PKG_VERSION).tar.gz
-PKG_HASH:=8c5a50db089bd2a1b08dbc5b00d2027602ca7ff238ba7658fabca454d4298e60
-PKG_SOURCE_URL:=https://www.sqlite.org/2019/
-
-PKG_LICENSE:=PUBLICDOMAIN
-PKG_LICENSE_FILES:=
-
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-autoconf-$(PKG_VERSION)
-
-PKG_BUILD_PARALLEL:=1
+PKG_SOURCE_URL:=https://www.sqlite.org/2022/
+PKG_HASH:=0333552076d2700c75352256e91c78bf5cd62491589ba0c69aed0a81868980e7
 
 PKG_CPE_ID:=cpe:/a:sqlite:sqlite
+PKG_LICENSE:=PUBLICDOMAIN
+PKG_LICENSE_FILES:=
+PKG_MAINTAINER:=
 
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-autoconf-$(PKG_VERSION)
+PKG_BUILD_PARALLEL:=1
 PKG_FIXUP:=autoreconf
-
 PKG_INSTALL:=1
 
 PKG_CONFIG_DEPENDS := \
+	CONFIG_SQLITE3_BATCH_ATOMIC_WRITE \
+	CONFIG_SQLITE3_COLUMN_METADATA \
 	CONFIG_SQLITE3_DYNAMIC_EXTENSIONS \
 	CONFIG_SQLITE3_FTS3 \
 	CONFIG_SQLITE3_FTS4 \
@@ -42,10 +41,9 @@ PKG_CONFIG_DEPENDS := \
 include $(INCLUDE_DIR)/package.mk
 
 define Package/sqlite3/Default
-  SUBMENU:=database
+  SUBMENU:=Database
   TITLE:=SQLite (v3.x) database engine
   URL:=http://www.sqlite.org/
-  MAINTAINER:=Sebastian Kemper <sebastian_ml@gmx.net>
 endef
 
 define Package/sqlite3/Default/description
@@ -60,6 +58,15 @@ define Package/libsqlite3
   DEPENDS:=+libpthread +zlib
   TITLE+= (library)
   ABI_VERSION:=0
+endef
+
+define Package/libsqlite3-dev
+  $(call Package/sqlite3/Default)
+  SECTION:=devel
+  CATEGORY:=Development
+  SUBMENU:=Libraries
+  DEPENDS:=libsqlite3
+  TITLE:=Development files for the libsqlite3 library
 endef
 
 define Package/libsqlite3/description
@@ -98,7 +105,9 @@ endef
 TARGET_CFLAGS += \
 	-DHAVE_ISNAN \
 	-DHAVE_MALLOC_USABLE_SIZE \
-	-DSQLITE_ENABLE_UNLOCK_NOTIFY
+	-DSQLITE_ENABLE_UNLOCK_NOTIFY \
+	$(if $(CONFIG_SQLITE3_BATCH_ATOMIC_WRITE),-DSQLITE_ENABLE_BATCH_ATOMIC_WRITE) \
+	$(if $(CONFIG_SQLITE3_COLUMN_METADATA),-DSQLITE_ENABLE_COLUMN_METADATA)
 
 CONFIGURE_ARGS += \
 	--disable-debug \
@@ -108,8 +117,8 @@ CONFIGURE_ARGS += \
 	--enable-threadsafe \
 	$(if $(CONFIG_SQLITE3_DYNAMIC_EXTENSIONS),--enable-dynamic-extensions,--disable-dynamic-extensions) \
 	$(if $(CONFIG_SQLITE3_FTS3),--enable-fts3,--disable-fts3) \
-	$(if $(CONFIG_SQLITE3_FTS3),--enable-fts4,--disable-fts4) \
-	$(if $(CONFIG_SQLITE3_FTS3),--enable-fts5,--disable-fts5) \
+	$(if $(CONFIG_SQLITE3_FTS4),--enable-fts4,--disable-fts4) \
+	$(if $(CONFIG_SQLITE3_FTS5),--enable-fts5,--disable-fts5) \
 	$(if $(CONFIG_SQLITE3_JSON1),--enable-json1,--disable-json1) \
 	$(if $(CONFIG_SQLITE3_RTREE),--enable-rtree,--disable-rtree) \
 	$(if $(CONFIG_SQLITE3_SESSION),--enable-session,--disable-session)
@@ -135,10 +144,24 @@ define Package/libsqlite3/install
 	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libsqlite3.so.$(ABI_VERSION)* $(1)/usr/lib
 endef
 
+define Package/libsqlite3-dev/install
+	$(INSTALL_DIR) $(1)/usr/include
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/include/sqlite3.h \
+	  $(1)/usr/include
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/include/sqlite3ext.h \
+	  $(1)/usr/include
+	$(INSTALL_DIR) $(1)/usr/lib
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libsqlite3.a $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/lib/pkgconfig/sqlite3.pc \
+	  $(1)/usr/lib/pkgconfig/
+endef
+
 define Package/sqlite3-cli/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/sqlite3 $(1)/usr/bin
 endef
 
 $(eval $(call BuildPackage,libsqlite3))
+$(eval $(call BuildPackage,libsqlite3-dev))
 $(eval $(call BuildPackage,sqlite3-cli))
